@@ -45,6 +45,7 @@ namespace OverlayApp {
             spotlightRadiusControl.Value = settings.Radius;
             featheringRadiusControl.Value = settings.Feathering_radius;
             autoHideDelayControl.Value = settings.Autohide_delay;
+            transparencyControl.Value = settings.Transparency;
 
             overlay_form = new OverlayForm(screens[0], overlay_data);
             overlay_form.Show();
@@ -96,6 +97,7 @@ namespace OverlayApp {
 
         private void ManagerForm_FormClosed(object sender, FormClosedEventArgs e) {
             refresher.Abort();
+            timer.Stop();
             overlay_form?.Close();
         }
 
@@ -289,13 +291,14 @@ namespace OverlayApp {
                 try {
                     Settings config = (Settings)serializer.Deserialize(fstram);
                     return config;
+                } catch (Exception e) {
+                    // Do nothing
                 } finally {
                     fstram.Close();
                 }
-            } else {
-                var settings = new Settings();
-                return settings;
             }
+            var settings = new Settings();
+            return settings;
         }
 
         public void SaveSettings() {
