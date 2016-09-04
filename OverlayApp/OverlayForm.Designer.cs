@@ -1,6 +1,6 @@
 ﻿namespace OverlayApp
 {
-    partial class Form1
+    partial class OverlayForm
     {
         /// <summary>
         /// Required designer variable.
@@ -37,7 +37,7 @@
             this.ClientSize = new System.Drawing.Size(282, 254);
             this.Name = "Form1";
             this.Text = "Form1";
-            this.Click += new System.EventHandler(this.Form1_Click);
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.Form1_FormClosed);
             this.ResumeLayout(false);
 
         }

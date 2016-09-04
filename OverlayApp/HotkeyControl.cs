@@ -12,9 +12,7 @@ using System.Windows.Forms;
 
 //
 
-namespace OverlayApp
-
-{
+namespace OverlayApp {
 
     /// <summary>
 
@@ -22,9 +20,7 @@ namespace OverlayApp
 
     /// </summary>
 
-    public partial class HotkeyControl : TextBox
-
-    {
+    public partial class HotkeyControl : TextBox {
 
         // These variables store the current hotkey and modifier(s)
 
@@ -48,21 +44,15 @@ namespace OverlayApp
 
         /// </summary>
 
-        public override ContextMenu ContextMenu
+        public override ContextMenu ContextMenu {
 
-        {
-
-            get
-
-            {
+            get {
 
                 return dummy;
 
             }
 
-            set
-
-            {
+            set {
 
                 base.ContextMenu = dummy;
 
@@ -76,21 +66,15 @@ namespace OverlayApp
 
         /// </summary>
 
-        public override bool Multiline
+        public override bool Multiline {
 
-        {
-
-            get
-
-            {
+            get {
 
                 return base.Multiline;
 
             }
 
-            set
-
-            {
+            set {
 
                 // Ignore what the user wants; force Multiline to false
 
@@ -106,9 +90,7 @@ namespace OverlayApp
 
         /// </summary>
 
-        public HotkeyControl()
-
-        {
+        public HotkeyControl() {
 
             this.ContextMenu = dummy; // Disable right-clicking
 
@@ -140,9 +122,7 @@ namespace OverlayApp
 
         /// </summary>
 
-        private void PopulateModifierLists()
-
-        {
+        private void PopulateModifierLists() {
 
             // Shift + 0 - 9, A - Z
 
@@ -208,9 +188,7 @@ namespace OverlayApp
 
         /// </summary>
 
-        public new void Clear()
-
-        {
+        public new void Clear() {
 
             this.Hotkey = Keys.None;
 
@@ -226,25 +204,17 @@ namespace OverlayApp
 
         /// </summary>
 
-        void HotkeyControl_KeyDown(object sender, KeyEventArgs e)
-
-        {
+        void HotkeyControl_KeyDown(object sender, KeyEventArgs e) {
 
             // Clear the current hotkey
 
-            if (e.KeyCode == Keys.Back || e.KeyCode == Keys.Delete)
-
-            {
+            if (e.KeyCode == Keys.Back || e.KeyCode == Keys.Delete) {
 
                 ResetHotkey();
 
                 return;
 
-            }
-
-            else
-
-            {
+            } else {
 
                 this._modifiers = e.Modifiers;
 
@@ -264,13 +234,9 @@ namespace OverlayApp
 
         /// </summary>
 
-        void HotkeyControl_KeyUp(object sender, KeyEventArgs e)
+        void HotkeyControl_KeyUp(object sender, KeyEventArgs e) {
 
-        {
-
-            if (this._hotkey == Keys.None && Control.ModifierKeys == Keys.None)
-
-            {
+            if (this._hotkey == Keys.None && Control.ModifierKeys == Keys.None) {
 
                 ResetHotkey();
 
@@ -288,9 +254,7 @@ namespace OverlayApp
 
         /// </summary>
 
-        void HotkeyControl_KeyPress(object sender, KeyPressEventArgs e)
-
-        {
+        void HotkeyControl_KeyPress(object sender, KeyPressEventArgs e) {
 
             e.Handled = true;
 
@@ -302,13 +266,9 @@ namespace OverlayApp
 
         /// </summary>
 
-        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+        protected override bool ProcessCmdKey(ref Message msg, Keys keyData) {
 
-        {
-
-            if (keyData == Keys.Delete || keyData == (Keys.Control | Keys.Delete))
-
-            {
+            if (keyData == Keys.Delete || keyData == (Keys.Control | Keys.Delete)) {
 
                 ResetHotkey();
 
@@ -332,9 +292,7 @@ namespace OverlayApp
 
         /// </summary>
 
-        public void ResetHotkey()
-
-        {
+        public void ResetHotkey() {
 
             this._hotkey = Keys.None;
 
@@ -350,21 +308,15 @@ namespace OverlayApp
 
         /// </summary>
 
-        public Keys Hotkey
+        public Keys Hotkey {
 
-        {
-
-            get
-
-            {
+            get {
 
                 return this._hotkey;
 
             }
 
-            set
-
-            {
+            set {
 
                 this._hotkey = value;
 
@@ -380,21 +332,15 @@ namespace OverlayApp
 
         /// </summary>
 
-        public Keys HotkeyModifiers
+        public Keys HotkeyModifiers {
 
-        {
-
-            get
-
-            {
+            get {
 
                 return this._modifiers;
 
             }
 
-            set
-
-            {
+            set {
 
                 this._modifiers = value;
 
@@ -410,9 +356,7 @@ namespace OverlayApp
 
         /// </summary>
 
-        private void Redraw()
-
-        {
+        private void Redraw() {
 
             Redraw(false);
 
@@ -426,15 +370,11 @@ namespace OverlayApp
 
         /// <param name="bCalledProgramatically">Specifies whether this function was called by the Hotkey/HotkeyModifiers properties or by the user.</param>
 
-        private void Redraw(bool bCalledProgramatically)
-
-        {
+        public void Redraw(bool bCalledProgramatically) {
 
             // No hotkey set
 
-            if (this._hotkey == Keys.None)
-
-            {
+            if (this._hotkey == Keys.None) {
 
                 this.Text = "None";
 
@@ -444,9 +384,7 @@ namespace OverlayApp
 
             // LWin/RWin doesn't work as hotkeys (neither do they work as modifier keys in .NET 2.0)
 
-            if (this._hotkey == Keys.LWin || this._hotkey == Keys.RWin)
-
-            {
+            if (this._hotkey == Keys.LWin || this._hotkey == Keys.RWin) {
 
                 this.Text = "None";
 
@@ -456,21 +394,15 @@ namespace OverlayApp
 
             // Only validate input if it comes from the user
 
-            if (bCalledProgramatically == false)
-
-            {
+            if (bCalledProgramatically == false) {
 
                 // No modifier or shift only, AND a hotkey that needs another modifier
 
                 if ((this._modifiers == Keys.Shift || this._modifiers == Keys.None) &&
 
-                this.needNonShiftModifier.Contains((int)this._hotkey))
+                this.needNonShiftModifier.Contains((int)this._hotkey)) {
 
-                {
-
-                    if (this._modifiers == Keys.None)
-
-                    {
+                    if (this._modifiers == Keys.None) {
 
                         // Set Ctrl+Alt as the modifier unless Ctrl+Alt+<key> won't work...
 
@@ -482,11 +414,7 @@ namespace OverlayApp
 
                             this._modifiers = Keys.Alt | Keys.Shift;
 
-                    }
-
-                    else
-
-                    {
+                    } else {
 
                         // User pressed Shift and an invalid key (e.g. a letter or a number),
 
@@ -506,9 +434,7 @@ namespace OverlayApp
 
                 if ((this._modifiers == (Keys.Alt | Keys.Control)) &&
 
-                this.needNonAltGrModifier.Contains((int)this._hotkey))
-
-                {
+                this.needNonAltGrModifier.Contains((int)this._hotkey)) {
 
                     // Ctrl+Alt+4 etc won't work; reset hotkey and tell the user
 
@@ -520,23 +446,15 @@ namespace OverlayApp
 
                 }
 
-                if (this._modifiers == Keys.None)
+                if (this._modifiers == Keys.None) {
 
-                {
-
-                    if (this._hotkey == Keys.None)
-
-                    {
+                    if (this._hotkey == Keys.None) {
 
                         this.Text = "None";
 
                         return;
 
-                    }
-
-                    else
-
-                    {
+                    } else {
 
                         // We get here if we've got a hotkey that is valid without a modifier,
 
