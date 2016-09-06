@@ -10,7 +10,7 @@ using System.Linq;
 namespace OverlayApp {
     public partial class OverlayForm : System.Windows.Forms.Form {
         // Directx graphics device
-        GraphicsDevice dev = null;
+        public GraphicsDevice dev = null;
         BasicEffect effect = null;
 
         System.Windows.Forms.Screen screen;
@@ -110,7 +110,7 @@ namespace OverlayApp {
                             level = 2.0f * t * t;
                         } else {
                             t -= 0.5f;
-                            level = 2.0f * t * (1.0f- t)+0.5f;
+                            level = 2.0f * t * (1.0f - t) + 0.5f;
                         }
                         float cur_tr = tr * max_p + (middle_tr - tr * max_p) * level;
                         float cur_r = r + f - f * i / (FEATHER_LEVELS - 1);
@@ -145,27 +145,31 @@ namespace OverlayApp {
         }
 
         protected override void OnPaint(System.Windows.Forms.PaintEventArgs e) {
-            float transparency = (100-overlay_data.Settings.Transparency)/100f;
-            var overlay_color = overlay_data.Settings.Overlay_color;
-            Color fill_color = new Color(0, 0, 0, transparency * overlay_data.MaxProgress);
-            fill_color.R = overlay_color.R;
-            fill_color.G = overlay_color.G;
-            fill_color.B = overlay_color.B;
-            if (overlay_data.MaxProgress > 0.0f) {
-                dev.Clear(fill_color);
+            if (dev.GraphicsDeviceStatus == GraphicsDeviceStatus.Lost) {
+                dev.Reset();
             } else {
-                dev.Clear(new Color(0, 0, 0, 0));
-            }
-            effect.VertexColorEnabled = true;
-            foreach (EffectPass pass in effect.CurrentTechnique.Passes) pass.Apply();
-
-            if (overlay_data.MaxProgress > 0.0f) {
-                int circles = CreateFeatheredCircle(overlay_data.Settings.Radius, overlay_data.Settings.Feathering_radius, fill_color, transparency, overlay_data.MaxProgress);
-                if (circles > 0) {
-                    dev.DrawUserPrimitives(PrimitiveType.TriangleList, v, 0, circles * CIRCLE_TRIANGLES, VertexPositionColor.VertexDeclaration);
+                float transparency = (100 - overlay_data.Settings.Transparency) / 100f;
+                var overlay_color = overlay_data.Settings.Overlay_color;
+                Color fill_color = new Color(0, 0, 0, transparency * overlay_data.MaxProgress);
+                fill_color.R = overlay_color.R;
+                fill_color.G = overlay_color.G;
+                fill_color.B = overlay_color.B;
+                if (overlay_data.MaxProgress > 0.0f) {
+                    dev.Clear(fill_color);
+                } else {
+                    dev.Clear(new Color(0, 0, 0, 0));
                 }
+                effect.VertexColorEnabled = true;
+                foreach (EffectPass pass in effect.CurrentTechnique.Passes) pass.Apply();
+
+                if (overlay_data.MaxProgress > 0.0f) {
+                    int circles = CreateFeatheredCircle(overlay_data.Settings.Radius, overlay_data.Settings.Feathering_radius, fill_color, transparency, overlay_data.MaxProgress);
+                    if (circles > 0) {
+                        dev.DrawUserPrimitives(PrimitiveType.TriangleList, v, 0, circles * CIRCLE_TRIANGLES, VertexPositionColor.VertexDeclaration);
+                    }
+                }
+                dev.Present();
             }
-            dev.Present();
         }
 
 

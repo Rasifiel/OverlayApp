@@ -47,7 +47,7 @@ namespace OverlayApp {
             autoHideDelayControl.Value = settings.Autohide_delay;
             transparencyControl.Value = settings.Transparency;
 
-            overlay_form = new OverlayForm(screens[0], overlay_data);
+            overlay_form = new OverlayForm(screens[settings.Screen], overlay_data);
             overlay_form.Show();
 
             refresher = new Thread(new ThreadStart(this.UpdateState));
@@ -61,6 +61,11 @@ namespace OverlayApp {
         private void UpdateState() {
             while (true) {
                 overlay_data.Update();
+                if (overlay_form.dev.GraphicsDeviceStatus == Microsoft.Xna.Framework.Graphics.GraphicsDeviceStatus.Lost) {
+                    overlay_form.Invoke(new MethodInvoker(delegate { overlay_form.Close(); }));
+                    overlay_form = new OverlayForm(screens[settings.Screen], overlay_data);
+                    overlay_form.Show();
+                }
                 Thread.Sleep(50);
             }
         }
@@ -70,7 +75,7 @@ namespace OverlayApp {
             if (!overlay_data.FollowMode && settings.Autohide_delay>0) {
                 timer.Interval = settings.Autohide_delay;
                 timer.Start();
-            }
+            }   
         }
         void AddFollow(object sender, KeyPressedEventArgs e) {
             overlay_data.ToggleFollow();
@@ -500,6 +505,13 @@ namespace OverlayApp {
             return modifier.CompareTo(other.modifier);
         }
 
+        override public bool Equals(object o) {
+            if (!(o is HotKeyCombo)) {
+                return false;
+            }
+            return CompareTo((HotKeyCombo)o) == 0;
+        }
+
         private HotKeyCombo() {
 
         }
@@ -546,7 +558,8 @@ namespace OverlayApp {
 
         public void UpdateCombo(HotKeyCombo combo) {
             hook.UnregisterHotKey(this.combo);
-            this.combo = combo;
+            this.combo.Key = combo.Key;
+            this.combo.Modifier = combo.Modifier;
             hook.RegisterHotKey(combo);
         } 
     }
